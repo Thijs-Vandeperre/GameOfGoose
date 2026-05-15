@@ -9,16 +9,19 @@ namespace GameOfGoose.Tests.Dice
     {
         private readonly Die _die;
 
+        /// <summary>
+        /// Sets up a Die instance for testing.
+        /// </summary>
         public DieTests()
         {
             _die = new Die();
         }
 
-    /// <summary>
-    /// Verifies that Roll returns a value between 1 and 6 over 1000 iterations.  
-    /// </summary>
-    [Fact]
-    public void Roll_ReturnsValueBetweenOneAndSix()
+        /// <summary>
+        /// Verifies that Roll returns a value between 1 and 6 over 1000 iterations.  
+        /// </summary>
+        [Fact]
+        public void Roll_ReturnsValueBetweenOneAndSix()
         {
             for (int i = 0; i < 1000; i++)
             {
