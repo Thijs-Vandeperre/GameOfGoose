@@ -52,10 +52,36 @@ TemporaryDependencyNodeTargetIdentifier=net7.0
 /warnaserror+:NU1605,SYSLIB0011
 
 [sourceFiles]
+Board.cs
+Dice/
+ DiceRoll.cs
+ Die.cs
+Factories/
+ BoardFactory.cs
+ PieceFactory.cs
+ PlayerFactory.cs
+Game.cs
+GameStatus.cs
+Logging/
+ ConsoleLogger.cs
+ ILogger.cs
 obj/Debug/net7.0/
  .NETCoreApp,Version=v7.0.AssemblyAttributes.cs
  GameOfGoose.Core.AssemblyInfo.cs
+Piece.cs
 Placeholder.cs
+Player.cs
+Spaces/
+ Bridge.cs
+ Death.cs
+ End.cs
+ Goose.cs
+ Inn.cs
+ ISpace.cs
+ Maze.cs
+ Prison.cs
+ Regular.cs
+ Well.cs
 
 [metadataReferences]
 <NUGET>/microsoft.netcore.app.ref/7.0.20/ref/net7.0/

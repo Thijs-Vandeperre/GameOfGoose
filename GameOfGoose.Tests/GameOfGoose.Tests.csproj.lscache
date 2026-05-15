@@ -53,10 +53,36 @@ TemporaryDependencyNodeTargetIdentifier=net7.0
 
 [sourceFiles]
 <NUGET>/microsoft.net.test.sdk/17.3.2/build/netcoreapp2.1/Microsoft.NET.Test.Sdk.Program.cs
+Board.cs
+Dice/
+ DiceRoll.cs
+ Die.cs
+Factories/
+ BoardFactory.cs
+ PieceFactory.cs
+ PlayerFactory.cs
+Game.cs
+GameStatus.cs
+Logging/
+ ConsoleLogger.cs
+ ILogger.cs
 obj/Debug/net7.0/
  .NETCoreApp,Version=v7.0.AssemblyAttributes.cs
  GameOfGoose.Tests.AssemblyInfo.cs
+Piece.cs
 PlaceholderTest.cs
+Player.cs
+Spaces/
+ Bridge.cs
+ Death.cs
+ End.cs
+ Goose.cs
+ Inn.cs
+ ISpace.cs
+ Maze.cs
+ Prison.cs
+ Regular.cs
+ Well.cs
 Usings.cs
 
 [metadataReferences]
