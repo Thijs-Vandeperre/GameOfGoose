@@ -13,16 +13,8 @@ primary
 lastDtbSucceeded
 
 [properties]
-AssemblyName=GameOfGoose.Core
 CommandLineArgsForDesignTimeEvaluation=-langversion:11.0 -define:TRACE
-CompilerGeneratedFilesOutputPath=
 MaxSupportedLangVersion=11.0
-ProjectAssetsFile=<PATH>obj/project.assets.json
-RootNamespace=GameOfGoose.Core
-RunAnalyzers=
-RunAnalyzersDuringLiveAnalysis=
-SolutionPath=*Undefined*
-TargetFrameworkIdentifier=.NETCoreApp
 TargetPath=<PATH>bin/Debug/net7.0/GameOfGoose.Core.dll
 TargetRefPath=<PATH>obj/Debug/net7.0/ref/GameOfGoose.Core.dll
 TemporaryDependencyNodeTargetIdentifier=net7.0
@@ -69,7 +61,6 @@ obj/Debug/net7.0/
  .NETCoreApp,Version=v7.0.AssemblyAttributes.cs
  GameOfGoose.Core.AssemblyInfo.cs
 Piece.cs
-Placeholder.cs
 Player.cs
 Spaces/
  Bridge.cs

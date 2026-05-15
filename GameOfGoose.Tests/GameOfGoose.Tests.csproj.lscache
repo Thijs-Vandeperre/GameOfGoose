@@ -21,7 +21,7 @@ ProjectAssetsFile=<PATH>obj/project.assets.json
 RootNamespace=GameOfGoose.Tests
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
-SolutionPath=*Undefined*
+SolutionPath=<PATH>../GameOfGoose.sln
 TargetFrameworkIdentifier=.NETCoreApp
 TargetPath=<PATH>bin/Debug/net7.0/GameOfGoose.Tests.dll
 TargetRefPath=<PATH>obj/Debug/net7.0/ref/GameOfGoose.Tests.dll
@@ -53,36 +53,36 @@ TemporaryDependencyNodeTargetIdentifier=net7.0
 
 [sourceFiles]
 <NUGET>/microsoft.net.test.sdk/17.3.2/build/netcoreapp2.1/Microsoft.NET.Test.Sdk.Program.cs
-Board.cs
+BoardTests.cs
 Dice/
- DiceRoll.cs
- Die.cs
+ DiceRollTests.cs
+ DieTests.cs
 Factories/
- BoardFactory.cs
- PieceFactory.cs
- PlayerFactory.cs
-Game.cs
+ BoardFactoryTests.cs
+ PieceFactoryTests.cs
+ PlayerFactoryTests.cs
 GameStatus.cs
+GameTests.cs
 Logging/
- ConsoleLogger.cs
- ILogger.cs
+ ConsoleLoggerTests.cs
+ ILoggerTests.cs
 obj/Debug/net7.0/
  .NETCoreApp,Version=v7.0.AssemblyAttributes.cs
  GameOfGoose.Tests.AssemblyInfo.cs
-Piece.cs
+PieceTests.cs
 PlaceholderTest.cs
-Player.cs
+PlayerTests.cs
 Spaces/
- Bridge.cs
- Death.cs
- End.cs
- Goose.cs
- Inn.cs
- ISpace.cs
- Maze.cs
- Prison.cs
- Regular.cs
- Well.cs
+ BridgeTests.cs
+ DeathTests.cs
+ EndTests.cs
+ GooseTests.cs
+ InnTests.cs
+ ISpaceTests.cs
+ MazeTests.cs
+ PrisonTests.cs
+ RegularTests.cs
+ WellTests.cs
 Usings.cs
 
 [metadataReferences]
