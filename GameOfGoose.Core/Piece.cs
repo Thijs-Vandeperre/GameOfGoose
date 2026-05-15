@@ -21,9 +21,9 @@ namespace GameOfGoose.Core
         public int SkipTurns { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the piece is moving forward.
+        /// Gets or sets a value indicating whether the piece is moving forward. Defaults to true. 
         /// </summary>
-        public bool IsMovingForward { get; set; }
+        public bool IsMovingForward { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether the piece has won. 
