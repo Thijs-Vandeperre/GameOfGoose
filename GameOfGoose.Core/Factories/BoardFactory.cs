@@ -9,7 +9,7 @@ namespace GameOfGoose.Core.Factories
     public class BoardFactory
     {
         /// <summary>
-        /// Creates and returns a fully configured game board with all 63 spaces.
+        /// Creates and returns a fully configured game board with all 64 spaces (positions 0 through 63).
         /// </summary>
         /// <param name="pieces">The list of pieces used to initialize the Well space.</param>
         /// <returns>A fully configured Board instance with all special and regular spaces.</returns>
