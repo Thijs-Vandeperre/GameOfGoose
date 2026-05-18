@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using GameOfGoose.Core.Spaces;
 
 namespace GameOfGoose.Core
@@ -9,6 +10,11 @@ namespace GameOfGoose.Core
     public class Board
     {
         private readonly IReadOnlyDictionary<int, ISpace> _spaces;
+
+        /// <summary>
+        /// Gets the end position of the board.
+        /// </summary>
+        public int EndPosition => _spaces.Keys.Max();
 
         /// <summary>
         /// Initializes a new instance of <see cref="Board"/> with the specified space dictionary. 
