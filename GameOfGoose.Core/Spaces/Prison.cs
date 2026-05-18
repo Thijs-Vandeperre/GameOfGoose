@@ -6,6 +6,7 @@ namespace GameOfGoose.Core.Spaces
     public class Prison : ISpace
     {
         private readonly int _skipTurns;
+        
         /// <summary>
         /// Gets the space number.
         /// </summary>
