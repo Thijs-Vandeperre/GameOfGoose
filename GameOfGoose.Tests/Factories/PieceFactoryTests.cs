@@ -1,6 +1,6 @@
-using GameOfGoose.Core;
+using GameOfGoose.Core.Factories;
 
-namespace GameOfGoose.Tests
+namespace GameOfGoose.Tests.Factories
 {
     /// <summary>
     /// Contains unit tests for the PieceFactory.

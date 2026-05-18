@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using GameOfGoose.Core;
 using GameOfGoose.Core.Spaces;
+using GameOfGoose.Core.Factories;
 
 namespace GameOfGoose.Tests.Spaces
 {

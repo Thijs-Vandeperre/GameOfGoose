@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace GameOfGoose.Core
+namespace GameOfGoose.Core.Factories
 {
     /// <summary>
     /// Factory for creating game players.

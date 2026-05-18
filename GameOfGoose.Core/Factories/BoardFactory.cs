@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using GameOfGoose.Core.Spaces;
 
-namespace GameOfGoose.Core
+namespace GameOfGoose.Core.Factories
 {
     /// <summary>
     /// Factory for creating the game board.
