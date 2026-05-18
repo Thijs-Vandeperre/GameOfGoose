@@ -31,7 +31,7 @@ namespace GameOfGoose.Core.Factories
                 spaces.Add(position, new Goose(position));
             }
 
-            for (int i = 1; i <= 63; i++)
+            for (int i = 0; i <= 63; i++)
             {
                 if (!spaces.ContainsKey(i))
                 {
