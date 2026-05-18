@@ -12,7 +12,7 @@ namespace GameOfGoose.Tests.Spaces
         private readonly Piece _piece;
 
         /// <summary>
-        /// Sets up a Regular space and a piece instance for testing.
+        /// Sets up a Goose space and a piece instance for testing.
         /// </summary>
         public GooseTests()
         {
