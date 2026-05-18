@@ -8,15 +8,15 @@ namespace GameOfGoose.Core
     /// </summary>
     public class Board
     {
-        private readonly IReadOnlyDictionary<int, ISpace> _dictionary;
+        private readonly IReadOnlyDictionary<int, ISpace> _spaces;
 
         /// <summary>
         /// Initializes a new instance of <see cref="Board"/> with the specified space dictionary. 
         /// </summary>
-        /// <param name="dictionary">A read-only dictionary mapping space numbers to their corresponding ISpace implementations.</param>
-        public Board(IReadOnlyDictionary<int, ISpace> dictionary)
+        /// <param name="spaces">A read-only dictionary mapping space numbers to their corresponding ISpace implementations.</param>
+        public Board(IReadOnlyDictionary<int, ISpace> spaces)
         {
-            _dictionary = dictionary;
+            _spaces = spaces;
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace GameOfGoose.Core
         /// <returns>The ISpace implementation at the given position.</returns>
         public ISpace GetSpace(int position)
         {
-            return _dictionary[position];
+            return _spaces[position];
         }
     }
 }
