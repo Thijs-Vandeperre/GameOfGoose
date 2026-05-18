@@ -5,18 +5,21 @@ namespace GameOfGoose.Core.Spaces
     /// </summary>
     public class Inn : ISpace
     {
+        private readonly int _skipTurns;
         /// <summary>
         /// Gets the space number.
         /// </summary>
         public int SpaceNumber { get; }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="Inn"/> with the specified space number.
+        /// Initializes a new instance of <see cref="Inn"/> with the specified space number and skip turns.
         /// </summary>
         /// <param name="spaceNumber">The unique number identifying this space.</param>
-        public Inn(int spaceNumber)
+        /// <param name="skipTurns">The number of turns to skip when a piece lands on this space.</param>
+        public Inn(int spaceNumber, int skipTurns)
         {
             SpaceNumber = spaceNumber;
+            _skipTurns = skipTurns;
         }
 
         /// <summary>
@@ -26,7 +29,7 @@ namespace GameOfGoose.Core.Spaces
         /// <param name="roll">The total value of the dice roll.</param>
         public void SpaceAction(Piece piece, int roll)
         {
-            piece.SkipTurns = 1;
+            piece.SkipTurns = _skipTurns;
         }
     }
 }
