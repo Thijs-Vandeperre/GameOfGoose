@@ -89,7 +89,7 @@ namespace GameOfGoose.Core
         /// </summary>
         /// <param name="player">The player whose turn it is.</param>
         /// <returns>A formatted string representing the result of the player's turn.</returns>
-        private string NextTurn(Player player)
+        internal string NextTurn(Player player)
         {
             if (player.Piece.SkipTurns > 0)
             {
@@ -97,6 +97,7 @@ namespace GameOfGoose.Core
                 return $"/ :{FormatPosition(player.Piece.CurrentPosition)}";
             }
 
+            player.Piece.IsMovingForward = true;
             var (roll1, roll2) = DiceRoll.DoubleRoll();
             int roll = roll1 + roll2;
 
@@ -144,7 +145,7 @@ namespace GameOfGoose.Core
         /// <param name="roll1">The value of the first die.</param>
         /// <param name="roll2">The value of the second die.</param>
         /// <returns>True if a special case was handled, false otherwise.</returns>
-        private bool HandleFirstTurn(Piece piece, int roll1, int roll2)
+        internal bool HandleFirstTurn(Piece piece, int roll1, int roll2)
         {
             if ((roll1 == 5 && roll2 == 4) || (roll1 == 4 && roll2 == 5))
             {
@@ -165,7 +166,7 @@ namespace GameOfGoose.Core
         /// <param name="piece">The piece that overshot the end.</param>
         /// <param name="newPosition">The calculated position before bouncing.</param>
         /// <returns>The final position after bouncing back.</returns>
-        private int HandleBounce(Piece piece, int newPosition)
+        internal int HandleBounce(Piece piece, int newPosition)
         {
             var bounce = newPosition - Board.EndPosition;
             piece.IsMovingForward = false;
@@ -190,6 +191,6 @@ namespace GameOfGoose.Core
         /// </summary>
         /// <param name="position">The board position to format</param>
         /// <returns>A formatted position string.</returns>
-        private string FormatPosition(int position) => position == 0 ? "Start" : $"S{position}";
+        internal string FormatPosition(int position) => position == 0 ? "Start" : $"S{position}";
     }
 }
