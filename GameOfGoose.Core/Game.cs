@@ -18,7 +18,7 @@ namespace GameOfGoose.Core
         /// <summary>
         /// Gets the list of players in the game.
         /// </summary>
-        public List<Player> Players { get; }
+        public IReadOnlyList<Player> Players { get; }
 
         /// <summary>
         /// Gets the game board.
