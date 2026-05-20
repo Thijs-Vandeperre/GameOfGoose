@@ -24,6 +24,7 @@ namespace GameOfGoose.Core
             var board = BoardFactory.CreateBoard(pieces);
             var diceRoll = new TwoDiceRoll(new Die());
             var logger = new ConsoleLogger();
+            var formatter = new GameFormatter();
             var inputReader = new ConsoleInputReader();
             var rules = new List<IGameRule>
             {
@@ -32,7 +33,7 @@ namespace GameOfGoose.Core
                 new SpaceActionRule()
             };
 
-            var game = new Game(players, board, diceRoll, logger, inputReader, rules);
+            var game = new Game(players, board, diceRoll, logger, formatter, inputReader, rules);
             game.Start();
         }
     }

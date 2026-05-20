@@ -41,7 +41,7 @@ namespace GameOfGoose.Tests.Engine
                 new SpaceActionRule()
             };
 
-            _game = new Game(_players, _board, new TwoDiceRoll(new Die()), new NoOpLogger(), new NoOpInputReader(), rules);
+            _game = new Game(_players, _board, new TwoDiceRoll(new Die()), new NoOpLogger(), new GameFormatter(), new NoOpInputReader(), rules);
         }
 
         #region SkipTurns
@@ -88,31 +88,6 @@ namespace GameOfGoose.Tests.Engine
             var result = _game.NextTurn(player);
 
             Assert.Equal("/ :S10", result);
-        }
-
-        #endregion
-
-        #region FormatPosition
-
-        /// <summary>
-        /// Verifies formatting of position 0.
-        /// </summary>
-        [Fact]
-        public void FormatPosition_Zero_ReturnsStart()
-        {
-            Assert.Equal("Start", _game.FormatPosition(0));
-        }
-
-        /// <summary>
-        /// Verifies formatting of non-zero positions.
-        /// </summary>
-        [Theory]
-        [InlineData(1, "S1")]
-        [InlineData(32, "S32")]
-        [InlineData(63, "S63")]
-        public void FormatPosition_NonZero_ReturnsCorrect(int input, string expected)
-        {
-            Assert.Equal(expected, _game.FormatPosition(input));
         }
 
         #endregion
