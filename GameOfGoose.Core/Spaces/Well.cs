@@ -31,12 +31,12 @@ namespace GameOfGoose.Core.Spaces
         /// <param name="roll">The total value of the dice roll.</param>
         public void SpaceAction(Piece thisPiece, int roll)
         {
-            thisPiece.SkipTurns = 1;
+            thisPiece.IsStuck = true;
             foreach (Piece piece in _pieces)
             {
                 if (piece.CurrentPosition == SpaceNumber && piece != thisPiece)
                 {
-                    piece.SkipTurns = 0;
+                    piece.IsStuck = false;
                 }
             }
         }

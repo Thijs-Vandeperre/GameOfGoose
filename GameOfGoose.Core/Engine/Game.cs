@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using GameOfGoose.Core.Dice;
+using GameOfGoose.Core.Engine.Rules;
 using GameOfGoose.Core.Logging;
 using GameOfGoose.Core.Spaces;
 
-namespace GameOfGoose.Core
+namespace GameOfGoose.Core.Engine
 {
     /// <summary>
     /// Represents and controls the Game of Goose game.
@@ -15,6 +17,7 @@ namespace GameOfGoose.Core
         private readonly IDiceRoll _diceRoll;
         private readonly ILogger _logger;
         private readonly IInputReader _inputReader;
+        private readonly IEnumerable<IGameRule> _rules;
 
         /// <summary>
         /// Gets the list of players in the game.
@@ -34,13 +37,14 @@ namespace GameOfGoose.Core
         /// <param name="diceRoll">The dice roll used to generate random roll values.</param>
         /// <param name="logger">The logger used to output game messages.</param>
         /// <param name="inputReader">The input reader used to wait for player input.</param>
-        public Game(IReadOnlyList<Player> players, Board board, IDiceRoll diceRoll, ILogger logger, IInputReader inputReader)
+        public Game(IReadOnlyList<Player> players, Board board, IDiceRoll diceRoll, ILogger logger, IInputReader inputReader, IEnumerable<IGameRule> rules)
         {
             Players = players;
             Board = board;
             _diceRoll = diceRoll;
             _logger = logger;
             _inputReader = inputReader;
+            _rules = rules;
         }
 
         /// <summary>
@@ -67,17 +71,15 @@ namespace GameOfGoose.Core
                 turnResults.Add(NextTurn(player));
                 if (player.Piece.HasWon)
                 {
+                    _logger.Log(string.Join("\t", turnResults));
                     End(player);
-                    break;
+                    return;
                 }
             }
             _logger.Log(string.Join("\t", turnResults));
-            if (_gameStatus == GameStatus.InProgress)
-            {
-                _turnNumber++;
-                _logger.Log($"[Press ENTER to play Turn {_turnNumber}]");
-                _inputReader.WaitForEnter();
-            }
+            _turnNumber++;
+            _logger.Log($"[Press ENTER to play Turn {_turnNumber}]");
+            _inputReader.WaitForEnter();
         }
 
         /// <summary>
@@ -87,38 +89,51 @@ namespace GameOfGoose.Core
         /// <returns>A formatted string representing the result of the player's turn.</returns>
         internal string NextTurn(Player player)
         {
-            if (player.Piece.SkipTurns > 0)
+            if (player.Piece.SkipTurns > 0 || player.Piece.IsStuck)
             {
-                player.Piece.SkipTurns--;
+                if (player.Piece.SkipTurns > 0)
+                {
+                    player.Piece.SkipTurns--;
+                }
                 return $"/ :{FormatPosition(player.Piece.CurrentPosition)}";
             }
 
             player.Piece.IsMovingForward = true;
+
             var (roll1, roll2) = _diceRoll.DoubleRoll();
             int roll = roll1 + roll2;
 
-            if (_turnNumber != 1 || !HandleFirstTurn(player.Piece, roll1, roll2))
+            player.Piece.MoveTo(player.Piece.CurrentPosition + roll);
+
+            var context = new GameContext
             {
-                int newPosition = player.Piece.CurrentPosition + roll;
-                if (newPosition > Board.EndPosition)
-                {
-                    newPosition = HandleBounce(player.Piece, newPosition);
-                }
-                player.Piece.MoveTo(newPosition);
+                Player = player,
+                Board = Board,
+                Roll1 = roll1,
+                Roll2 = roll2,
+                TurnNumber = _turnNumber
+            };
+
+            foreach (var rule in _rules.OrderBy(r => r.Order).Where(r => !(r is SpaceActionRule)))
+            {
+                rule.Apply(context);
             }
 
-            int positionBeforeSpaceAction = player.Piece.CurrentPosition;
-            Board.GetSpace(player.Piece.CurrentPosition).SpaceAction(player.Piece, roll);
-            HandleGooseChaining(player.Piece, roll);
+            int positionAfterBounce = player.Piece.CurrentPosition;
 
-            if (player.Piece.CurrentPosition != positionBeforeSpaceAction)
+            foreach (var rule in _rules.OfType<SpaceActionRule>())
             {
-                return $"{roll1}+{roll2}: {FormatPosition(positionBeforeSpaceAction)}->{FormatPosition(player.Piece.CurrentPosition)}";
+                rule.Apply(context);
             }
-            else
+
+            int finalPosition = player.Piece.CurrentPosition;
+
+            if (finalPosition != positionAfterBounce)
             {
-                return $"{roll1}+{roll2}: {FormatPosition(player.Piece.CurrentPosition)}";
+                return $"{roll1}+{roll2}: {FormatPosition(positionAfterBounce)}->{FormatPosition(finalPosition)}"; 
             }
+            
+            return $"{roll1}+{roll2}: {FormatPosition(finalPosition)}";
         }
 
         /// <summary>
@@ -132,54 +147,6 @@ namespace GameOfGoose.Core
             _logger.Log($"{player.Name} has won!");
             _logger.Log("Press ENTER to FINISH GAME");
             _inputReader.WaitForEnter();
-        }
-
-        /// <summary>
-        /// Handles the special first turn rules for 5+4 and 6+3 rolls.
-        /// </summary>
-        /// <param name="piece">The piece to move.</param>
-        /// <param name="roll1">The value of the first die.</param>
-        /// <param name="roll2">The value of the second die.</param>
-        /// <returns>True if a special case was handled, false otherwise.</returns>
-        internal bool HandleFirstTurn(Piece piece, int roll1, int roll2)
-        {
-            if ((roll1 == 5 && roll2 == 4) || (roll1 == 4 && roll2 == 5))
-            {
-                piece.MoveTo(26);
-                return true;
-            }
-            else if ((roll1 == 6 && roll2 == 3) || (roll1 == 3 && roll2 == 6))
-            {
-                piece.MoveTo(53);
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Calculates the bounce-back position when a piece overshoots the end.
-        /// </summary>
-        /// <param name="piece">The piece that overshot the end.</param>
-        /// <param name="newPosition">The calculated position before bouncing.</param>
-        /// <returns>The final position after bouncing back.</returns>
-        internal int HandleBounce(Piece piece, int newPosition)
-        {
-            var bounce = newPosition - Board.EndPosition;
-            piece.IsMovingForward = false;
-            return Board.EndPosition - bounce;
-        }
-
-        /// <summary>
-        /// Handles goose chaining by repeatedly applying the goose space action while the piece is on a goose space.
-        /// </summary>
-        /// <param name="piece">The piece to apply goose chaining to.</param>
-        /// <param name="roll">The total dice roll value used for movement</param>
-        private void HandleGooseChaining(Piece piece, int roll)
-        {
-            while (Board.GetSpace(piece.CurrentPosition) is Goose)
-            {
-                Board.GetSpace(piece.CurrentPosition).SpaceAction(piece, roll);
-            }
         }
 
         /// <summary>

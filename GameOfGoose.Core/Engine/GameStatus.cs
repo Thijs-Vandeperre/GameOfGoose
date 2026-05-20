@@ -1,4 +1,4 @@
-namespace GameOfGoose.Core
+namespace GameOfGoose.Core.Engine
 {
     /// <summary>
     /// Represents the current status of the game.
