@@ -27,13 +27,13 @@ namespace GameOfGoose.Tests.Spaces
         }
 
         /// <summary>
-        /// Verifies that SpaceAction sets SkipTurns to one.
+        /// Verifies that SpaceAction sets IsStuck to true.
         /// </summary>
         [Fact]
-        public void SpaceAction_AlwaysSetsSkipTurnsToOne()
+        public void SpaceAction_SetsIsStuckToTrue()
         {
             _well.SpaceAction(_thisPiece, 2);
-            Assert.Equal(1, _thisPiece.SkipTurns);
+            Assert.True(_thisPiece.IsStuck);
             
         }
 
@@ -44,10 +44,12 @@ namespace GameOfGoose.Tests.Spaces
         public void SpaceAction_FreesOtherPieceWhenAlreadyAtWell()
         {
             _otherPiece.MoveTo(31);
-            _otherPiece.SkipTurns = 1;
+            _otherPiece.IsStuck = true;
+
             _well.SpaceAction(_thisPiece, 2);
-            Assert.Equal(1, _thisPiece.SkipTurns);
-            Assert.Equal(0, _otherPiece.SkipTurns);
+
+            Assert.True(_thisPiece.IsStuck);
+            Assert.False(_otherPiece.IsStuck);
         }
     }
 }
