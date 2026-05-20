@@ -12,8 +12,6 @@ namespace GameOfGoose.Tests
     /// </summary>
     public class GameTests
     {
-        private readonly Game _game;
-        private readonly List<Player> _players;
         private readonly Board _board;
 
         /// <summary>
@@ -40,15 +38,29 @@ namespace GameOfGoose.Tests
         }
 
         /// <summary>
-        /// Sets up a Game instance with players, board, dice roll, no-op logger and no-op input reader for testing.
+        /// Sets up a board instance for testing.
         /// </summary>
         public GameTests()
         {
             var pieces = PieceFactory.CreatePieces(4);
-            _players = PlayerFactory.CreatePlayers(pieces);
             _board = BoardFactory.CreateBoard(pieces);
-            var diceRoll = new TwoDiceRoll(new Die());
-            _game = new Game(_players, _board, diceRoll, new NoOpLogger(), new NoOpInputReader());
+        }
+
+        /// <summary>
+        /// Creates a game instance with deterministic dice values.
+        /// </summary>
+        /// <param name="diceValues">The sequence of die values returned by the fake die.</param>
+        /// <returns>A game instance configured for testing.</returns>
+        private Game CreateGame(params int[] diceValues)
+        {
+            var pieces = PieceFactory.CreatePieces(4);
+            var players = PlayerFactory.CreatePlayers(pieces);
+            var board = BoardFactory.CreateBoard(pieces);
+
+            var fakeDie = new FakeDie(diceValues);
+            var diceRoll = new TwoDiceRoll(fakeDie);
+
+            return new Game(players, board, diceRoll, new NoOpLogger(), new NoOpInputReader());
         }
 
         #region HandleFirstTurn
@@ -66,8 +78,11 @@ namespace GameOfGoose.Tests
         [InlineData(3, 6, 53)]
         public void HandleFirstTurn_SpecialRoll_MovesPieceToCorrectPosition(int roll1, int roll2, int expectedPosition)
         {
-            var piece = _players[0].Piece;
-            _game.HandleFirstTurn(piece, roll1, roll2);
+            var game = CreateGame();
+            var piece = game.Players[0].Piece;
+
+            game.HandleFirstTurn(piece, roll1, roll2);
+
             Assert.Equal(expectedPosition, piece.CurrentPosition);
         }
 
@@ -83,8 +98,11 @@ namespace GameOfGoose.Tests
         [InlineData(3, 6)]
         public void HandleFirstTurn_SpecialRoll_ReturnsTrue(int roll1, int roll2)
         {
-            var piece = _players[0].Piece;
-            var result = _game.HandleFirstTurn(piece, roll1, roll2);
+            var game = CreateGame();
+            var piece = game.Players[0].Piece;
+
+            var result = game.HandleFirstTurn(piece, roll1, roll2);
+
             Assert.True(result);
         }
 
@@ -99,8 +117,11 @@ namespace GameOfGoose.Tests
         [InlineData(6, 6)]
         public void HandleFirstTurn_WithOtherRoll_ReturnsFalse(int roll1, int roll2)
         {
-            var piece = _players[0].Piece;
-            var result = _game.HandleFirstTurn(piece, roll1, roll2);
+            var game = CreateGame();
+            var piece = game.Players[0].Piece;
+
+            var result = game.HandleFirstTurn(piece, roll1, roll2);
+
             Assert.False(result);
         }
 
@@ -115,8 +136,11 @@ namespace GameOfGoose.Tests
         [InlineData(6, 6)]
         public void HandleFirstTurn_WithOtherRoll_DoesNotMovePiece(int roll1, int roll2)
         {
-            var piece = _players[0].Piece;
-            _game.HandleFirstTurn(piece, roll1, roll2);
+            var game = CreateGame();
+            var piece = game.Players[0].Piece;
+
+            game.HandleFirstTurn(piece, roll1, roll2);
+
             Assert.Equal(0, piece.CurrentPosition);
         }
 
@@ -135,8 +159,11 @@ namespace GameOfGoose.Tests
         [InlineData(75, 51)]
         public void HandleBounce_OvershootingEnd_BouncesBackToCorrectPosition(int newPosition, int expectedPosition)
         {
-            var piece = _players[0].Piece;
-            var result = _game.HandleBounce(piece, newPosition);
+            var game = CreateGame();
+            var piece = game.Players[0].Piece;
+
+            var result = game.HandleBounce(piece, newPosition);
+
             Assert.Equal(expectedPosition, result);
         }
 
@@ -146,8 +173,11 @@ namespace GameOfGoose.Tests
         [Fact]
         public void HandleBounce_SetsIsMovingForwardToFalse()
         {
-            var piece = _players[0].Piece;
-            _game.HandleBounce(piece, 70);
+            var game = CreateGame();
+            var piece = game.Players[0].Piece;
+
+            game.HandleBounce(piece, 70);
+
             Assert.False(piece.IsMovingForward);
         }
 
@@ -162,8 +192,11 @@ namespace GameOfGoose.Tests
         [InlineData(69, 57)]
         public void HandleBounce_VariousOvershoots_CalculatesCorrectPosition(int newPosition, int expectedPosition)
         {
-            var piece = _players[0].Piece;
-            var result = _game.HandleBounce(piece, newPosition);
+            var game = CreateGame();
+            var piece = game.Players[0].Piece;
+
+            var result = game.HandleBounce(piece, newPosition);
+
             Assert.Equal(expectedPosition, result);
         }
 
@@ -177,9 +210,13 @@ namespace GameOfGoose.Tests
         [Fact]
         public void NextTurn_WithSkipTurns_DecrementsSkipTurns()
         {
-            var player = _players[0];
+            var game = CreateGame();
+            var player = game.Players[0];
+
             player.Piece.SkipTurns = 2;
-            _game.NextTurn(player);
+
+            game.NextTurn(player);
+
             Assert.Equal(1, player.Piece.SkipTurns);
         }
 
@@ -189,10 +226,14 @@ namespace GameOfGoose.Tests
         [Fact]
         public void NextTurn_WithSkipTurns_DoesNotMovePiece()
         {
-            var player = _players[0];
+            var game = CreateGame();
+            var player = game.Players[0];
+
             player.Piece.SkipTurns = 1;
             player.Piece.MoveTo(10);
-            _game.NextTurn(player);
+
+            game.NextTurn(player);
+
             Assert.Equal(10, player.Piece.CurrentPosition);
         }
 
@@ -202,10 +243,14 @@ namespace GameOfGoose.Tests
         [Fact]
         public void NextTurn_WithSkipTurns_ReturnsSkipFormat()
         {
-            var player = _players[0];
+            var game = CreateGame();
+            var player = game.Players[0];
+
             player.Piece.SkipTurns = 1;
             player.Piece.MoveTo(10);
-            var result = _game.NextTurn(player);
+
+            var result = game.NextTurn(player);
+
             Assert.Equal("/ :S10", result);
         }
 
@@ -215,9 +260,13 @@ namespace GameOfGoose.Tests
         [Fact]
         public void NextTurn_WithSkipTurns_AtStart_ReturnsStartFormat()
         {
-            var player = _players[0];
+            var game = CreateGame();
+            var player = game.Players[0];
+
             player.Piece.SkipTurns = 1;
-            var result = _game.NextTurn(player);
+
+            var result = game.NextTurn(player);
+
             Assert.Equal("/ :Start", result);
         }
 
@@ -231,9 +280,13 @@ namespace GameOfGoose.Tests
         [Fact]
         public void NextTurn_NormalTurn_MovesPiece()
         {
-            var player = _players[0];
+            var game = CreateGame(3, 4);
+            var player = game.Players[0];
+
             player.Piece.MoveTo(10);
-            _game.NextTurn(player);
+
+            game.NextTurn(player);
+
             Assert.NotEqual(10, player.Piece.CurrentPosition);
         }
 
@@ -247,10 +300,14 @@ namespace GameOfGoose.Tests
         [Fact]
         public void NextTurn_AfterBounce_ResetsIsMovingForwardToTrue()
         {
-            var player = _players[0];
+            var game = CreateGame(3, 4);
+            var player = game.Players[0];
+
             player.Piece.IsMovingForward = false;
             player.Piece.MoveTo(10);
-            _game.NextTurn(player);
+
+            game.NextTurn(player);
+
             Assert.True(player.Piece.IsMovingForward);
         }
 
@@ -278,7 +335,10 @@ namespace GameOfGoose.Tests
         [Fact]
         public void FormatPosition_WithZero_ReturnsStart()
         {
-            var result = _game.FormatPosition(0);
+            var game = CreateGame();
+
+            var result = game.FormatPosition(0);
+
             Assert.Equal("Start", result);
         }
 
@@ -293,29 +353,31 @@ namespace GameOfGoose.Tests
         [InlineData(63, "S63")]
         public void FormatPosition_WithNonZero_ReturnsCorrectString(int position, string expected)
         {
-            var result = _game.FormatPosition(position);
+            var game = CreateGame();
+
+            var result = game.FormatPosition(position);
+
             Assert.Equal(expected, result);
         }
 
         #endregion
 
-        #region Start
+       #region Start
 
-
-        // TODO: Add ITwoDiceRoll interface and FixedDiceRoll mock to enable deterministic Start tests
         /// <summary>
         /// Verifies that Start ends the game when a player reaches the end position.
         /// </summary>
-        // [Fact]
-        // public void Start_WhenPlayerWins_SetsHasWonToTrue()
-        // {
-        //     foreach (var player in _players)
-        //     {
-        //         player.Piece.MoveTo(62);
-        //     }
-        //     _game.Start();
-        //     Assert.True(_players.Any(p => p.Piece.HasWon));
-        // }
+        [Fact]
+        public void Start_WhenPlayerWins_SetsHasWonToTrue()
+        {
+            var game = CreateGame(1, 1);
+
+            game.Players[0].Piece.MoveTo(61);
+
+            game.Start();
+
+            Assert.True(game.Players[0].Piece.HasWon);
+        }
 
         #endregion
     }

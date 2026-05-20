@@ -12,6 +12,7 @@ namespace GameOfGoose.Core
     {
         private int _turnNumber = 1;
         private GameStatus _gameStatus = GameStatus.InProgress;
+        private readonly IDiceRoll _diceRoll;
         private readonly ILogger _logger;
         private readonly IInputReader _inputReader;
 
@@ -24,11 +25,6 @@ namespace GameOfGoose.Core
         /// Gets the game board.
         /// </summary>
         public Board Board { get; }
-
-        /// <summary>
-        /// Gets the dice roll used to generate random rolls.
-        /// </summary>
-        public TwoDiceRoll DiceRoll { get; }
         
         /// <summary>
         /// Initializes a new instance of <see cref="Game"/> with the specified players, board, dice roll, logger and input reader.
@@ -38,11 +34,11 @@ namespace GameOfGoose.Core
         /// <param name="diceRoll">The dice roll used to generate random roll values.</param>
         /// <param name="logger">The logger used to output game messages.</param>
         /// <param name="inputReader">The input reader used to wait for player input.</param>
-        public Game(List<Player> players, Board board, TwoDiceRoll diceRoll, ILogger logger, IInputReader inputReader)
+        public Game(IReadOnlyList<Player> players, Board board, IDiceRoll diceRoll, ILogger logger, IInputReader inputReader)
         {
             Players = players;
             Board = board;
-            DiceRoll = diceRoll;
+            _diceRoll = diceRoll;
             _logger = logger;
             _inputReader = inputReader;
         }
@@ -98,7 +94,7 @@ namespace GameOfGoose.Core
             }
 
             player.Piece.IsMovingForward = true;
-            var (roll1, roll2) = DiceRoll.DoubleRoll();
+            var (roll1, roll2) = _diceRoll.DoubleRoll();
             int roll = roll1 + roll2;
 
             if (_turnNumber != 1 || !HandleFirstTurn(player.Piece, roll1, roll2))
