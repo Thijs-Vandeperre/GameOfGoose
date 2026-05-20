@@ -7,30 +7,24 @@ namespace GameOfGoose.Tests.Dice
     /// </summary>
     public class TwoDiceRollTests
     {
-        private readonly Die _die;
-        private readonly TwoDiceRoll _twoDiceRoll;
-
         /// <summary>
-        /// Sets up a Die and TwoDiceRoll instance for testing.  
+        /// Verifies that DoubleRoll returns the expected values from the injected die.
         /// </summary>
-        public TwoDiceRollTests()
+        [Theory]
+        [InlineData(3, 5)]
+        [InlineData(1, 4)]
+        [InlineData(6, 2)]
+        public void DoubleRoll_ReturnsExpectedValues(int roll1, int roll2)
         {
-            _die = new Die();
-            _twoDiceRoll = new TwoDiceRoll(_die);
-        }
+            // Arrange
+            var diceRoll = new TwoDiceRoll(new FakeDie(roll1, roll2));
 
-        /// <summary>
-        /// Verifies that DoubleRoll returns two values between 1 and 6 over 1000 iterations.
-        /// </summary>
-        [Fact]
-        public void DoubleRoll_ReturnsTwoValuesBetweenOneAndSix()
-        {
-            for (int i = 0; i < 1000; i++)
-            {
-                var (roll1, roll2) = _twoDiceRoll.DoubleRoll();
-                Assert.InRange(roll1, 1, 6);
-                Assert.InRange(roll2, 1, 6);
-            }
+            // Act
+            var result = diceRoll.DoubleRoll();
+
+            //Assert
+            Assert.Equal(roll1, result.Roll1);
+            Assert.Equal(roll2, result.Roll2);
         }
     }
 }
