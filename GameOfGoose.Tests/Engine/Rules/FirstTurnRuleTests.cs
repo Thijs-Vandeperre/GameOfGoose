@@ -2,8 +2,6 @@ using GameOfGoose.Core;
 using GameOfGoose.Core.Engine;
 using GameOfGoose.Core.Engine.Rules;
 using GameOfGoose.Core.Factories;
-using System.Collections.Generic;
-using Xunit;
 
 namespace GameOfGoose.Tests.Engine.Rules
 {

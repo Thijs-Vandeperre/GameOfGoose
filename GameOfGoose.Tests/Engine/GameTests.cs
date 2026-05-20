@@ -5,7 +5,6 @@ using GameOfGoose.Core.Engine.Rules;
 using GameOfGoose.Core.Factories;
 using GameOfGoose.Core.Logging;
 using System.Collections.Generic;
-using Xunit;
 
 namespace GameOfGoose.Tests.Engine
 {

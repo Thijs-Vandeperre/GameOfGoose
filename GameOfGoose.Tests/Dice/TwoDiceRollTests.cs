@@ -16,13 +16,9 @@ namespace GameOfGoose.Tests.Dice
         [InlineData(6, 2)]
         public void DoubleRoll_ReturnsExpectedValues(int roll1, int roll2)
         {
-            // Arrange
             var diceRoll = new TwoDiceRoll(new FakeDie(roll1, roll2));
 
-            // Act
             var result = diceRoll.DoubleRoll();
-
-            //Assert
             Assert.Equal(roll1, result.Roll1);
             Assert.Equal(roll2, result.Roll2);
         }

@@ -8,6 +8,7 @@ namespace GameOfGoose.Core.Spaces
     public class Well : ISpace
     {
         private readonly IReadOnlyList<Piece> _pieces;
+        
         /// <summary>
         /// Gets the space number.
         /// </summary>

@@ -3,7 +3,6 @@ using System.Linq;
 using GameOfGoose.Core.Dice;
 using GameOfGoose.Core.Engine.Rules;
 using GameOfGoose.Core.Logging;
-using GameOfGoose.Core.Spaces;
 
 namespace GameOfGoose.Core.Engine
 {
