@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using GameOfGoose.Core.UI;
 
-namespace GameOfGoose.Tests.Logging
+namespace GameOfGoose.Tests.UI
 {
     /// <summary>
     /// Contains unit tests for the ConsoleInputReader class.
