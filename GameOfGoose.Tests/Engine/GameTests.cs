@@ -13,10 +13,6 @@ namespace GameOfGoose.Tests.Engine
     /// </summary>
     public class GameTests
     {
-        private readonly Game _game;
-        private readonly IReadOnlyList<Player> _players;
-        private readonly Board _board;
-
         private class NoOpInputReader : IInputReader
         {
             public void WaitForEnter() { }
@@ -27,12 +23,8 @@ namespace GameOfGoose.Tests.Engine
             public void Log(string message) { }
         }
 
-        public GameTests()
+        private Game CreateGame(IReadOnlyList<Player> players, Board board, IDiceRoll diceRoll)
         {
-            var pieces = PieceFactory.CreatePieces(4);
-            _players = PlayerFactory.CreatePlayers(pieces);
-            _board = BoardFactory.CreateBoard(pieces);
-
             var rules = new List<IGameRule>
             {
                 new FirstTurnRule(),
@@ -40,53 +32,94 @@ namespace GameOfGoose.Tests.Engine
                 new SpaceActionRule()
             };
 
-            _game = new Game(_players, _board, new TwoDiceRoll(new Die()), new NoOpLogger(), new GameFormatter(), new NoOpInputReader(), rules);
+            return new Game(players, board, diceRoll, new NoOpLogger(), new GameFormatter(), new NoOpInputReader(), rules);
         }
 
         #region SkipTurns
 
         /// <summary>
-        /// Verifies that skip turns decrement correctly.
+        /// Verifies that a piece with skip turns does not move during Start.
         /// </summary>
         [Fact]
-        public void NextTurn_WithSkipTurns_DecrementsValue()
+        public void Start_WithSkipTurns_DoesNotMovePiece()
         {
-            var player = _players[0];
-            player.Piece.SkipTurns = 2;
+            var pieces = PieceFactory.CreatePieces(1);
+            pieces[0].MoveTo(61);
+            pieces[0].SkipTurns = 1;
+            var players = PlayerFactory.CreatePlayers(pieces);
+            var board = BoardFactory.CreateBoard(pieces);
 
-            _game.NextTurn(player);
+            // turn 1: skipped (SkipTurns goes to 0)
+            // turn 2: rolls 1+1 = 2, lands on 63 (End)
+            var game = CreateGame(players, board, new TwoDiceRoll(new FakeDie(1, 1, 1, 1)));
 
-            Assert.Equal(1, player.Piece.SkipTurns);
+            game.Start();
+
+            Assert.True(pieces[0].HasWon);
+            Assert.Equal(63, pieces[0].CurrentPosition);
         }
 
         /// <summary>
-        /// Verifies that a skip turn prevents movement.
+        /// Verifies that skip turns decrement correctly during Start.
         /// </summary>
         [Fact]
-        public void NextTurn_WithSkipTurns_DoesNotMove()
+        public void Start_WithSkipTurns_DecrementsSkipTurns()
         {
-            var player = _players[0];
-            player.Piece.SkipTurns = 1;
-            player.Piece.MoveTo(10);
+            var pieces = PieceFactory.CreatePieces(1);
+            pieces[0].MoveTo(61);
+            pieces[0].SkipTurns = 1;
+            var players = PlayerFactory.CreatePlayers(pieces);
+            var board = BoardFactory.CreateBoard(pieces);
 
-            _game.NextTurn(player);
+            // turn 1: skipped, turn 2: wins
+            var game = CreateGame(players, board, new TwoDiceRoll(new FakeDie(1, 1, 1, 1)));
 
-            Assert.Equal(10, player.Piece.CurrentPosition);
+            game.Start();
+
+            Assert.Equal(0, pieces[0].SkipTurns);
+        }
+
+        #endregion
+
+        #region Movement
+
+        /// <summary>
+        /// Verifies that Start terminates when a player wins.
+        /// </summary>
+        [Fact]
+        public void Start_TerminatesWhenPlayerWins()
+        {
+            var pieces = PieceFactory.CreatePieces(1);
+            pieces[0].MoveTo(61);
+            var players = PlayerFactory.CreatePlayers(pieces);
+            var board = BoardFactory.CreateBoard(pieces);
+
+            // rolls 1+1 = 2, lands on 63 (End)
+            var game = CreateGame(players, board, new TwoDiceRoll(new FakeDie(1, 1)));
+
+            game.Start();
+
+            Assert.True(pieces[0].HasWon);
         }
 
         /// <summary>
-        /// Verifies skip turn format output.
+        /// Verifies that only the winning player has HasWon set to true.
         /// </summary>
         [Fact]
-        public void NextTurn_WithSkipTurns_ReturnsCorrectFormat()
+        public void Start_SetsHasWonOnlyOnWinningPiece()
         {
-            var player = _players[0];
-            player.Piece.SkipTurns = 1;
-            player.Piece.MoveTo(10);
+            var pieces = PieceFactory.CreatePieces(2);
+            pieces[0].MoveTo(61);
+            var players = PlayerFactory.CreatePlayers(pieces);
+            var board = BoardFactory.CreateBoard(pieces);
 
-            var result = _game.NextTurn(player);
+            // player 1 rolls 1+1 = 2, lands on 63 (End), player 2 never gets to move
+            var game = CreateGame(players, board, new TwoDiceRoll(new FakeDie(1, 1)));
 
-            Assert.Equal("/ :S10", result);
+            game.Start();
+
+            Assert.True(pieces[0].HasWon);
+            Assert.False(pieces[1].HasWon);
         }
 
         #endregion

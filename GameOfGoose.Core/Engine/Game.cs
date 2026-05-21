@@ -81,7 +81,7 @@ namespace GameOfGoose.Core.Engine
         /// <summary>
         /// Processes one turn for the specified player.
         /// </summary>
-        internal string NextTurn(Player player)
+        private string NextTurn(Player player)
         {
             if (player.Piece.SkipTurns > 0 || player.Piece.IsStuck)
             {
