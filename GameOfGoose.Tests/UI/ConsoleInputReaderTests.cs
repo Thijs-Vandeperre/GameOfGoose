@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Xml.Linq;
 using GameOfGoose.Core.UI;
 
 namespace GameOfGoose.Tests.UI
@@ -26,8 +27,8 @@ namespace GameOfGoose.Tests.UI
         public void WaitForEnter_ReturnsWhenEnterIsPressed()
         {
             Console.SetIn(new StringReader(""));
-            _inputReader.WaitForEnter();
-            Assert.True(true);
+            var ex = Record.Exception(() => _inputReader.WaitForEnter());
+            Assert.Null(ex);
         }
     }
 }
