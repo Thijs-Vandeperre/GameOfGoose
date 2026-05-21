@@ -25,14 +25,7 @@ namespace GameOfGoose.Core.Engine.Rules
 
             while (true)
             {
-                int end = context.Board.EndPosition;
-                if (piece.CurrentPosition > end)
-                {
-                    int bounce = piece.CurrentPosition - end;
-                    piece.IsMovingForward = false;
-                    piece.MoveTo(end - bounce);
-                    break;
-                }
+                BounceRule.ApplyBounce(piece, context.Board.EndPosition);
 
                 var currentSpace = context.Board.GetSpace(piece.CurrentPosition);
                 if (currentSpace is Goose goose)
