@@ -1,6 +1,6 @@
 using System;
 
-namespace GameOfGoose.Core.Logging
+namespace GameOfGoose.Core.UI
 {
     /// <summary>
     /// Implements IInputReader for reading user input from the console.

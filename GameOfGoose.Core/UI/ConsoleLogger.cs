@@ -1,6 +1,6 @@
 using System;
 
-namespace GameOfGoose.Core.Logging
+namespace GameOfGoose.Core.UI
 {
     /// <summary>
     /// Implements the ILogger interface for logging messages in console.

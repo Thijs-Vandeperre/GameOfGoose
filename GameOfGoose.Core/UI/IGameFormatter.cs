@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace GameOfGoose.Core.Logging
+namespace GameOfGoose.Core.UI
 {
     /// <summary>
     /// Defines formatting for game output strings.

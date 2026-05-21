@@ -3,7 +3,7 @@ using GameOfGoose.Core.Dice;
 using GameOfGoose.Core.Engine;
 using GameOfGoose.Core.Engine.Rules;
 using GameOfGoose.Core.Factories;
-using GameOfGoose.Core.Logging;
+using GameOfGoose.Core.UI;
 using System.Collections.Generic;
 
 namespace GameOfGoose.Tests.Engine

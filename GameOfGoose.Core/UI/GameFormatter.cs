@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GameOfGoose.Core.Logging
+namespace GameOfGoose.Core.UI
 {
     /// <summary>
     /// Formats game output strings for the Game of Goose.

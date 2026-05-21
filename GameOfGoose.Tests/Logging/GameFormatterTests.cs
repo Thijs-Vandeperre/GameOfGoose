@@ -1,4 +1,4 @@
-using GameOfGoose.Core.Logging;
+using GameOfGoose.Core.UI;
 
 namespace GameOfGoose.Tests.Logging
 {

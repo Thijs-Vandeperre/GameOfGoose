@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GameOfGoose.Core.Dice;
 using GameOfGoose.Core.Engine.Rules;
-using GameOfGoose.Core.Logging;
+using GameOfGoose.Core.UI;
 
 namespace GameOfGoose.Core.Engine
 {

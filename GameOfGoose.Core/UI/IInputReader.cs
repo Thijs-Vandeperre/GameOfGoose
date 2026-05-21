@@ -1,4 +1,4 @@
-namespace GameOfGoose.Core.Logging
+namespace GameOfGoose.Core.UI
 {
     /// <summary>
     /// Defines a contract for reading user input.
