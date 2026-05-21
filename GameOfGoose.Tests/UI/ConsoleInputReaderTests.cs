@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Xml.Linq;
 using GameOfGoose.Core.UI;
 
 namespace GameOfGoose.Tests.UI
