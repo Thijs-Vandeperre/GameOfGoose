@@ -27,6 +27,7 @@ namespace GameOfGoose.Tests.Engine
         {
             var rules = new List<IGameRule>
             {
+                new SkipTurnRule(),
                 new FirstTurnRule(),
                 new BounceRule(),
                 new SpaceActionRule()

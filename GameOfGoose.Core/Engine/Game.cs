@@ -83,12 +83,21 @@ namespace GameOfGoose.Core.Engine
         /// </summary>
         private string NextTurn(Player player)
         {
-            if (player.Piece.SkipTurns > 0 || player.Piece.IsStuck)
-            {
-                if (player.Piece.SkipTurns > 0)
-                    player.Piece.SkipTurns--;
+            var skipTurnRule = _rules.OfType<SkipTurnRule>().FirstOrDefault();
 
-                return _formatter.FormatSkipTurn(player.Piece.CurrentPosition);
+            if (skipTurnRule != null)
+            {
+                var skipContext = new GameContext
+                {
+                    Player = player,
+                    Board = Board,
+                    TurnNumber = _turnNumber
+                };
+
+                skipTurnRule.Apply(skipContext);
+
+                if (skipTurnRule.TurnSkipped)
+                    return _formatter.FormatSkipTurn(player.Piece.CurrentPosition);
             }
 
             player.Piece.IsMovingForward = true;
@@ -106,7 +115,7 @@ namespace GameOfGoose.Core.Engine
                 TurnNumber = _turnNumber
             };
 
-            foreach (var rule in _rules.OrderBy(r => r.Order).Where(r => !(r is SpaceActionRule)))
+            foreach (var rule in _rules.OrderBy(r => r.Order).Where(r => r is not SpaceActionRule && r is not SkipTurnRule))
             {
                 rule.Apply(context);
             }
