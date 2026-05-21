@@ -14,7 +14,7 @@ namespace GameOfGoose.Tests.Engine
     public class GameTests
     {
         private readonly Game _game;
-        private readonly List<Player> _players;
+        private readonly IReadOnlyList<Player> _players;
         private readonly Board _board;
 
         private class NoOpInputReader : IInputReader
