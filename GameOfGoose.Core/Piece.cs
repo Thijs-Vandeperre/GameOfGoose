@@ -26,7 +26,7 @@ namespace GameOfGoose.Core
         public bool IsMovingForward { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating wheter a piece is stuck.
+        /// Gets or sets a value indicating whether a piece is stuck.
         /// </summary>
         public bool IsStuck { get; set; }
 
