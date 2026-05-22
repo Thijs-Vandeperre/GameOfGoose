@@ -16,7 +16,7 @@ namespace GameOfGoose.Tests.Spaces
         private readonly Piece _otherPiece;
 
         /// <summary>
-        /// Sets up a Well space, a pieces list, and a piece instance for testing.
+        /// Sets up a Well space, a pieces list, and piece instances for testing.
         /// </summary>
         public WellTests()
         {
@@ -34,7 +34,6 @@ namespace GameOfGoose.Tests.Spaces
         {
             _well.SpaceAction(_thisPiece, 2);
             Assert.True(_thisPiece.IsStuck);
-            
         }
 
         /// <summary>
@@ -50,6 +49,44 @@ namespace GameOfGoose.Tests.Spaces
 
             Assert.True(_thisPiece.IsStuck);
             Assert.False(_otherPiece.IsStuck);
+        }
+
+        /// <summary>
+        /// Verifies that when a third piece arrives while two pieces are already stuck,
+        /// all previously stuck pieces at the well are freed, and only the arriving piece becomes stuck.
+        /// </summary>
+        [Fact]
+        public void SpaceAction_ThirdPieceArrives_FreesFirstStuckPiece()
+        {
+            var firstStuck = _pieces[0];
+            var secondStuck = _pieces[1];
+            var arriving = _pieces[2];
+
+            firstStuck.MoveTo(31);
+            firstStuck.IsStuck = true;
+            secondStuck.MoveTo(31);
+            secondStuck.IsStuck = true;
+
+            _well.SpaceAction(arriving, 2);
+
+            Assert.False(firstStuck.IsStuck);
+            Assert.False(secondStuck.IsStuck);
+            Assert.True(arriving.IsStuck);
+        }
+
+        /// <summary>
+        /// Verifies that a piece not at the well is not affected when another piece arrives.
+        /// </summary>
+        [Fact]
+        public void SpaceAction_PieceElsewhere_IsNotAffected()
+        {
+            var elsewhere = _pieces[1];
+            elsewhere.MoveTo(10);
+            elsewhere.IsStuck = false;
+
+            _well.SpaceAction(_thisPiece, 2);
+
+            Assert.False(elsewhere.IsStuck);
         }
     }
 }
