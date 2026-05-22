@@ -25,15 +25,22 @@ namespace GameOfGoose.Tests
         }
 
         /// <summary>
-        /// Verifies that GetSpace returns the correct space.
+        /// Verifies that GetSpace returns a Bridge at position 6.
         /// </summary>
         [Fact]
-        public void GetSpace_ReturnsCorrectSpace()
+        public void GetSpace_AtBridgePosition_ReturnsBridge()
         {
             var space = _board.GetSpace(6);
             Assert.IsType<Bridge>(space);
+        }
 
-            space = _board.GetSpace(19);
+        /// <summary>
+        /// Verifies that GetSpace returns an Inn at position 19.
+        /// </summary>
+        [Fact]
+        public void GetSpace_AtInnPosition_ReturnsInn()
+        {
+            var space = _board.GetSpace(19);
             Assert.IsType<Inn>(space);
         }
     }

@@ -69,6 +69,21 @@ namespace GameOfGoose.Tests.Engine.Rules
             Assert.Equal(12, context.Player.Piece.CurrentPosition);
         }
 
+        /// <summary>
+        /// Verifies that landing on the Bridge does not apply space 12's action (Bridge -> Regular 12 = no extra movement).
+        /// </summary>
+        [Fact]
+        public void Apply_Bridge_DoesNotChainFurtherAction()
+        {
+            // Space 12 is Regular, so final position should stay at 12 with no further movement.
+            var context = CreateContext(6);
+
+            _rule.Apply(context);
+
+            Assert.Equal(12, context.Player.Piece.CurrentPosition);
+            Assert.False(context.Player.Piece.HasWon);
+        }
+
         #endregion
 
         #region Inn
@@ -192,9 +207,9 @@ namespace GameOfGoose.Tests.Engine.Rules
         [Theory]
         [InlineData(5, 2, 3, 10)]   // 5 + 5 = 10, not a goose, stops
         [InlineData(9, 3, 3, 15)]   // 9 + 6 = 15, not a goose, stops
-        [InlineData(5, 2, 2, 13)]   // 5 + 4 = 9 (goose) → 9 + 4 = 13, stops
-        [InlineData(9, 4, 5, 63)]   // 9 + 9 = 18 (goose) → 27 → 36 → 45 → 54 → 63, stops
-        [InlineData(59, 2, 3, 62)]  // 59 + 5 = 64 (goose, overshoots) → bounces to 62, stops
+        [InlineData(5, 2, 2, 13)]   // 5 + 4 = 9 (goose) -> 9 + 4 = 13, stops
+        [InlineData(9, 4, 5, 63)]   // 9 + 9 = 18 (goose) -> 27 -> 36 -> 45 -> 54 -> 63, stops
+        [InlineData(59, 2, 3, 62)]  // 59 + 5 = 64 (goose, overshoots) -> bounces to 62, stops
         public void Apply_GooseSpace_ChainsMovementCorrectly(int startPosition, int roll1, int roll2, int expected)
         {
             var context = CreateContext(startPosition, roll1, roll2);
@@ -202,6 +217,37 @@ namespace GameOfGoose.Tests.Engine.Rules
             _rule.Apply(context);
 
             Assert.Equal(expected, context.Player.Piece.CurrentPosition);
+        }
+
+        #endregion
+
+        #region End
+
+        /// <summary>
+        /// Verifies that landing exactly on space 63 sets HasWon.
+        /// </summary>
+        [Fact]
+        public void Apply_End_SetsHasWon()
+        {
+            var context = CreateContext(63);
+
+            _rule.Apply(context);
+
+            Assert.True(context.Player.Piece.HasWon);
+        }
+
+        /// <summary>
+        /// Verifies that a goose chain landing on End sets HasWon.
+        /// </summary>
+        [Fact]
+        public void Apply_GooseChainLandsOnEnd_SetsHasWon()
+        {
+            // Space 54 is a Goose. Roll 9: 54 + 9 = 63 (End).
+            var context = CreateContext(54, 4, 5);
+
+            _rule.Apply(context);
+
+            Assert.True(context.Player.Piece.HasWon);
         }
 
         #endregion

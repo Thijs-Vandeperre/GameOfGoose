@@ -18,19 +18,46 @@ namespace GameOfGoose.Tests.Spaces
         {
             _regular = new Regular(1);
             _piece = new Piece(1);
+            _piece.MoveTo(10);
         }
 
         /// <summary>
-        /// Verifies that SpaceAction does not change the piece.
+        /// Verifies that SpaceAction does not change the piece's position.
         /// </summary>
         [Fact]
-        public void SpaceAction_DoesNotChangePiece()
+        public void SpaceAction_DoesNotChangePosition()
         {
             _regular.SpaceAction(_piece, 2);
-            Assert.Equal(0, _piece.CurrentPosition);
+            Assert.Equal(10, _piece.CurrentPosition);
+        }
+
+        /// <summary>
+        /// Verifies that SpaceAction does not set HasWon.
+        /// </summary>
+        [Fact]
+        public void SpaceAction_DoesNotSetHasWon()
+        {
+            _regular.SpaceAction(_piece, 2);
             Assert.False(_piece.HasWon);
+        }
+
+        /// <summary>
+        /// Verifies that SpaceAction does not change IsMovingForward.
+        /// </summary>
+        [Fact]
+        public void SpaceAction_DoesNotChangeIsMovingForward()
+        {
+            _regular.SpaceAction(_piece, 2);
             Assert.True(_piece.IsMovingForward);
-            Assert.Equal(1, _piece.PieceNumber);
+        }
+
+        /// <summary>
+        /// Verifies that SpaceAction does not set SkipTurns.
+        /// </summary>
+        [Fact]
+        public void SpaceAction_DoesNotSetSkipTurns()
+        {
+            _regular.SpaceAction(_piece, 2);
             Assert.Equal(0, _piece.SkipTurns);
         }
     }
