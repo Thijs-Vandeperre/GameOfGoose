@@ -52,6 +52,19 @@ namespace GameOfGoose.Tests.Engine.Rules
         }
 
         /// <summary>
+        /// Verifies that BounceRule sets IsMovingForward to false when piece overshoots.
+        /// </summary>
+        [Fact]
+        public void Apply_Overshoot_SetsIsMovingForwardFalse()
+        {
+            var context = CreateContext(64);
+
+            _rule.Apply(context);
+
+            Assert.False(context.Player.Piece.IsMovingForward);
+        }
+
+        /// <summary>
         /// Verifies that BounceRule does nothing when piece is on or before the end position.
         /// </summary>
         [Theory]
@@ -65,6 +78,19 @@ namespace GameOfGoose.Tests.Engine.Rules
             _rule.Apply(context);
 
             Assert.Equal(startPosition, context.Player.Piece.CurrentPosition);
+        }
+
+        /// <summary>
+        /// Verifies that BounceRule does not change IsMovingForward when there is no overshoot.
+        /// </summary>
+        [Fact]
+        public void Apply_NoOvershoot_DoesNotChangeIsMovingForward()
+        {
+            var context = CreateContext(50);
+
+            _rule.Apply(context);
+
+            Assert.True(context.Player.Piece.IsMovingForward);
         }
     }
 }

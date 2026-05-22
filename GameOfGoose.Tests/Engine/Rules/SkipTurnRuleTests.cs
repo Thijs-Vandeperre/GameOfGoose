@@ -30,8 +30,6 @@ namespace GameOfGoose.Tests.Engine.Rules
         /// <summary>
         /// Creates a game context for the specified player.
         /// </summary>
-        /// <param name="player">The player for whom the context is created.</param>
-        /// <returns>A game context containing the player, board and turn information.</returns>
         private GameContext CreateContext(Player player) => new GameContext
         {
             Player = player,
@@ -123,6 +121,19 @@ namespace GameOfGoose.Tests.Engine.Rules
             _rule.Apply(CreateContext(_players[0]));
 
             Assert.Equal(0, _players[0].Piece.SkipTurns);
+        }
+
+        /// <summary>
+        /// Verifies that IsStuck remains true after apply — the Well, not SkipTurnRule, is responsible for clearing it.
+        /// </summary>
+        [Fact]
+        public void Apply_WhenIsStuck_DoesNotClearIsStuck()
+        {
+            _players[0].Piece.IsStuck = true;
+
+            _rule.Apply(CreateContext(_players[0]));
+
+            Assert.True(_players[0].Piece.IsStuck);
         }
 
         #endregion

@@ -74,5 +74,25 @@ namespace GameOfGoose.Tests.Engine
             Assert.True(pieces[0].HasWon);
             Assert.False(pieces[1].HasWon);
         }
+
+        /// <summary>
+        /// Verifies that a player with pending SkipTurns does not move during that turn.
+        /// </summary>
+        [Fact]
+        public void Start_PlayerWithSkipTurns_DoesNotMoveOnSkippedTurn()
+        {
+            var pieces = PieceFactory.CreatePieces(2);
+            pieces[0].SkipTurns = 1;
+            pieces[1].MoveTo(61);
+            var players = PlayerFactory.CreatePlayers(pieces);
+            var board = BoardFactory.CreateBoard(pieces);
+
+            var game = CreateGame(players, board, new TwoDiceRoll(new FakeDie(1, 1)));
+
+            game.Start();
+
+            Assert.Equal(0, pieces[0].CurrentPosition);
+            Assert.True(pieces[1].HasWon);
+        }
     }
 }
